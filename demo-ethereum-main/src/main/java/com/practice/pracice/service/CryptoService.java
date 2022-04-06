@@ -22,6 +22,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
+import org.web3j.utils.Numeric;
 
 import com.practice.pracice.dto.CommonData;
 
@@ -66,8 +67,14 @@ public class CryptoService {
         		(folderPath+path);
   
         Credentials credentials = WalletUtils.loadCredentials(password, file);
+        BigInteger privateKey = credentials.getEcKeyPair().getPrivateKey();
+        
+        String sprivateIndex = privateKey.toString(16);
+        
        System.out.println(credentials.getEcKeyPair().getPrivateKey()
     		   +"key pair");
+       
+       System.out.println( sprivateIndex  +"  private Key");
         System.out.println("Get Wallet address===  "+credentials.getAddress());
             String address = credentials.getAddress();
             HttpService httpService = new HttpService("https://ropsten.infura.io/v3/78c9109631d94ee8be3941711cb1ea1b");
