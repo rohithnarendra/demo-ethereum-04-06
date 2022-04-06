@@ -1,7 +1,7 @@
 GET: $(document).ready(
 		function() {
 
-			// GET REQUEST
+		/*	// GET REQUEST
 			$("#getALlBooks").click(function(event) {
 				event.preventDefault();
 				ajaxGet();
@@ -37,4 +37,4 @@ GET: $(document).ready(
 					}
 				});
 			}
-		})
+		*/})
