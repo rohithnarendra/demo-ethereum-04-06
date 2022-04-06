@@ -1,16 +1,13 @@
 package com.practice.pracice.service;
 
 import java.io.File;
-import java.io.IOException;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.WalletUtils;
@@ -22,7 +19,6 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
-import org.web3j.utils.Numeric;
 
 import com.practice.pracice.dto.CommonData;
 
@@ -33,15 +29,18 @@ public class CryptoService {
 	@Value("${folderPath}")
 	private String folderPath;
 	
+	@Value("${cpath}")
+	private String createPath;
+	
 	public CommonData createAccount(CommonData data) throws Exception {
-		System.out.println("folder path"+folderPath);
 		
 		
 	    String directoryName = folderPath;
 	    File directory = new File(directoryName);
 	    if (! directory.exists()){
-	    	System.out.println();
-	        directory.mkdir();
+	    	System.out.println("Direct");
+	       boolean isCreated= directory.mkdir();
+	       System.out.println("directory created"+isCreated);
 	        }
 
 		
@@ -50,7 +49,6 @@ public class CryptoService {
 		System.out.println(data.getPassword());
 		
         String fileName = WalletUtils.generateFullNewWalletFile(data.getPassword(), file);
-        System.out.println("File Name------>>> " + fileName);
         String address = this.createAddress(fileName,data.getPassword());
         BigInteger bal = this.checkBalance(fileName,data.getPassword());
         CommonData commonData = new CommonData();
@@ -71,11 +69,21 @@ public class CryptoService {
         
         String sprivateIndex = privateKey.toString(16);
         
-       System.out.println(credentials.getEcKeyPair().getPrivateKey()
-    		   +"key pair");
        
        System.out.println( sprivateIndex  +"  private Key");
-        System.out.println("Get Wallet address===  "+credentials.getAddress());
+       
+       String directoryName = createPath;
+	    File directory = new File(directoryName);
+	    if (! directory.exists()){
+	        directory.mkdir();
+	        }
+       File newFile = new File(createPath+credentials.getAddress());
+       FileWriter fw = new FileWriter(newFile,true);
+       PrintWriter writer = new PrintWriter(fw);
+       writer.println(sprivateIndex);
+       writer.close();
+       
+       
             String address = credentials.getAddress();
             HttpService httpService = new HttpService("https://ropsten.infura.io/v3/78c9109631d94ee8be3941711cb1ea1b");
             Web3j web3 = Web3j.build(httpService);
